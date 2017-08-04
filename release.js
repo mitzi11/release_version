@@ -1,13 +1,18 @@
 // profiles: major, minor, micro
 
-function bumpVersion(version, profile){
-    this.version = version;
+var fs = require('fs');
+var fileName = "./build.json";
+var file = require(fileName);
+var version = file["post-processors"][0][0].tag;
+
+
+
+function bumpVersion(profile){ 
     var splitString = version.split(".");
     var major = parseInt(splitString[0]);
     var minor = parseInt(splitString[1]);
     var micro = parseInt(splitString[2]);
     var new_version = "";
-
     if(profile == "major"){
         major = major+1;
         new_version = (String(major)+ "." + String(minor) + "." + String(micro));
@@ -27,12 +32,8 @@ function bumpVersion(version, profile){
     }    
 }
 
-var fs = require('fs');
-var fileName = "./build.json";
-var file = require(fileName);
-
-file.tag = bumpVersion("1.0.0","minor");
-fs.writeFile(fileName, JSON.stringify(file), function(err){
+version = bumpVersion("minor");
+fs.writeFile(fileName, JSON.stringify(file), 'UTF-8', 4, function(err){
     if(err) return console.log(err);
     console.log("writing to " + fileName);
 });
