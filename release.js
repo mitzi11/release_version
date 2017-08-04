@@ -34,7 +34,23 @@ var file = require(fileName);
 file.tag = bumpVersion("1.0.0","minor");
 fs.writeFile(fileName, JSON.stringify(file), function(err){
     if(err) return console.log(err);
-    //console.log(JSON.stringify(file));
     console.log("writing to " + fileName);
-
 });
+
+function commit_file(){
+    var Client = require('svn-spawn');
+    var client = new Client({
+        cwd: './',
+        username: '*****', // optional if authentication not required or is already saved
+        password: '*****', // optional if authentication not required or is already saved
+        noAuthCache: true, // optional, if true, username does not become the logged in user on the machine
+    });
+
+    client.add('./build.json', function(err, data) {
+        client.commit(['GDO-1 bumped version of build.json', './build.json'], function(err, data) {
+            console.log('committed one file!');
+        });
+    });
+}
+
+commit_file();
